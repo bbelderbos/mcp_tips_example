@@ -2,6 +2,8 @@
 
 An MCP server that exposes your local coding tips (markdown notes) as tools and resources to Claude and other MCP clients.
 
+**Article:** [Build Your First MCP Server: Code Tips in Claude and Slack](https://belderbos.dev/blog/build-mcp-server-python-tips-slack/)
+
 ## What it does
 
 Reads markdown files from `~/code/bobcodesit/notes/` and exposes them via two tools and one resource:

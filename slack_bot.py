@@ -46,7 +46,7 @@ async def ask_claude(query: str) -> str:
                     messages=messages,
                     system=(
                         "Format all responses for Slack mrkdwn: "
-                        "use *bold* not **bold**, _italic_ not _italic_ with underscores, "
+                        "use *bold* not **bold**, _italic_ (underscores) for italics, "
                         "`code` for inline code, no ## headers, no markdown tables, "
                         "use bullet points instead."
                     ),
