@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "anthropic>=0.94.0",
     "mcp>=1.27.0",
     "python-decouple>=3.8",
     "slack-bolt>=1.28.0",

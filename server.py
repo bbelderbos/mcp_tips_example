@@ -8,21 +8,26 @@ NOTES_DIR = Path.home() / "code/bobcodesit/notes"
 mcp = FastMCP("code-tips")
 
 
+_cache: list[dict] = []
+
+
 def load_notes() -> list[dict]:
-    notes = []
+    global _cache
+    if _cache:
+        return _cache
     for path in sorted(NOTES_DIR.glob("*.md")):
         lines = path.read_text().strip().splitlines()
         title = lines[0].lstrip("# ").strip()
         tag_line = lines[-1] if lines[-1].startswith("#") else ""
         tags = [t.lstrip("#") for t in tag_line.split() if t.startswith("#")]
         body = "\n".join(lines[1:]).strip()
-        notes.append({"id": path.stem, "title": title, "tags": tags, "body": body})
-    return notes
+        _cache.append({"id": path.stem, "title": title, "tags": tags, "body": body})
+    return _cache
 
 
 @mcp.tool()
 def search_tips(query: str) -> list[dict]:
-    """Search code tips by keyword. Returns matching tips with title, tags, and body."""
+    """Search code tips by keyword. Pass a single short keyword (e.g. 'generator', 'decorator', 'contextmanager'), not a full sentence. Returns matching tips with title, tags, and body."""
     q = query.lower()
     return [
         {"id": n["id"], "title": n["title"], "tags": n["tags"], "body": n["body"]}
