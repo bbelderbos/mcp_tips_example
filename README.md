@@ -52,7 +52,7 @@ Or add it to `.mcp.json` in your project root for project-scoped access:
 
 ## Slack bot
 
-`slack_bot.py` adds a `/tip` slash command to Slack. It connects to this MCP server as a client, fetches the tool list, and routes queries through the Claude API — so Claude does the reasoning and decides which tools to call.
+`slack_bot.py` adds a `/tip` slash command to Slack. It starts and manages the MCP server as a subprocess internally — you don't need to run `server.py` separately. Queries are routed through the Claude API so Claude does the reasoning and decides which tools to call.
 
 ### Additional dependencies
 
