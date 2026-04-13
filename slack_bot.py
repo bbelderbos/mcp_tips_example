@@ -31,6 +31,7 @@ class MCPClient:
         self.session: ClientSession | None = None
         self.tools: list[ToolParam] = []
         self._ready = threading.Event()
+        self._lock = asyncio.Lock()
         threading.Thread(target=lambda: self.loop.run_until_complete(self._start()), daemon=True).start()
         self._ready.wait()
 
@@ -56,6 +57,10 @@ class MCPClient:
                 await asyncio.Event().wait()  # keep server alive for the bot's lifetime
 
     async def ask(self, query: str) -> str:
+        async with self._lock:
+            return await self._ask(query)
+
+    async def _ask(self, query: str) -> str:
         messages: list[MessageParam] = [{"role": "user", "content": query}]
 
         for _ in range(10):
