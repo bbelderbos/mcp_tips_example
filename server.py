@@ -20,7 +20,8 @@ def load_notes() -> list[dict]:
         title = lines[0].lstrip("# ").strip()
         tag_line = lines[-1] if lines[-1].startswith("#") else ""
         tags = [t.lstrip("#") for t in tag_line.split() if t.startswith("#")]
-        body = "\n".join(lines[1:]).strip()
+        content_lines = lines[1:-1] if tag_line else lines[1:]
+        body = "\n".join(content_lines).strip()
         _cache.append({"id": path.stem, "title": title, "tags": tags, "body": body})
     return _cache
 
