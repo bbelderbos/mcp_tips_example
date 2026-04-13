@@ -10,3 +10,8 @@ dependencies = [
     "python-decouple>=3.8",
     "slack-bolt>=1.28.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.29",
+]
