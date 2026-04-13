@@ -1,4 +1,5 @@
 import json
+from functools import cache
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -8,13 +9,9 @@ NOTES_DIR = Path.home() / "code/bobcodesit/notes"
 mcp = FastMCP("code-tips")
 
 
-_cache: list[dict] = []
-
-
+@cache
 def load_notes() -> list[dict]:
-    global _cache
-    if _cache:
-        return _cache
+    notes = []
     for path in sorted(NOTES_DIR.glob("*.md")):
         lines = path.read_text().strip().splitlines()
         title = lines[0].lstrip("# ").strip()
@@ -22,8 +19,8 @@ def load_notes() -> list[dict]:
         tags = [t.lstrip("#") for t in tag_line.split() if t.startswith("#")]
         content_lines = lines[1:-1] if tag_line else lines[1:]
         body = "\n".join(content_lines).strip()
-        _cache.append({"id": path.stem, "title": title, "tags": tags, "body": body})
-    return _cache
+        notes.append({"id": path.stem, "title": title, "tags": tags, "body": body})
+    return notes
 
 
 @mcp.tool()
