@@ -1,4 +1,6 @@
 import json
+import random
+import re
 from functools import cache
 from pathlib import Path
 
@@ -24,16 +26,29 @@ def load_notes() -> list[dict]:
 
 
 @mcp.tool()
-def search_tips(query: str) -> list[dict]:
-    """Search code tips by keyword. Pass a single short keyword (e.g. 'generator', 'decorator', 'contextmanager'), not a full sentence. Returns matching tips with title, tags, and body."""
-    q = query.lower()
-    return [
-        {"id": n["id"], "title": n["title"], "tags": n["tags"], "body": n["body"]}
+def search_tips(query: str, limit: int = 10) -> list[dict]:
+    """Search code tips by keyword. Pass a single short keyword (e.g. 'generator', 'decorator', 'contextmanager'), not a full sentence. Returns up to `limit` matching tips with id, title, and tags. Use get_tip to fetch the full body of a specific tip."""
+    pattern = re.compile(rf"\b{re.escape(query.lower())}\b")
+    results = [
+        {"id": n["id"], "title": n["title"], "tags": n["tags"]}
         for n in load_notes()
-        if q in n["title"].lower()
-        or q in n["body"].lower()
-        or any(q in t for t in n["tags"])
+        if pattern.search(n["title"].lower())
+        or pattern.search(n["body"].lower())
+        or any(pattern.search(t) for t in n["tags"])
     ]
+    return results[:limit]
+
+
+@mcp.tool()
+def random_tip(tag: str = "") -> dict:
+    """Return a random tip, optionally filtered by tag (e.g. 'built-ins', 'generators', 'decorators')."""
+    notes = load_notes()
+    if tag:
+        t = tag.lower().lstrip("#")
+        notes = [n for n in notes if any(t in note_tag for note_tag in n["tags"])]
+    if not notes:
+        return {"error": f"No tips found for tag: {tag}"}
+    return random.choice(notes)
 
 
 @mcp.tool()
