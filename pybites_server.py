@@ -1,3 +1,11 @@
+# PyBites content MCP server — 3 tools:
+#
+# search_content  – "Find PyBites articles on decorators" / "Any bites on list comprehensions?"
+# get_item        – "Get the full summary for the decorator use cases article"
+# topic_digest    – "What does PyBites have on generators across all content types?"
+#
+# Chained: "Find a PyBites article on decorators, get the full summary, write me a LinkedIn post"
+
 import html
 import json
 import re
