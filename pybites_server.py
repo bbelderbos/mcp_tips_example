@@ -10,6 +10,7 @@ import html
 import json
 import re
 import urllib.request
+from collections import defaultdict
 from functools import cache
 
 from mcp.server.fastmcp import FastMCP
@@ -69,18 +70,17 @@ def get_item(title_or_link: str) -> dict:
 
 
 @mcp.tool()
-def topic_digest(topic: str, max_per_type: int = 2) -> dict[str, list[dict]]:
+def topic_digest(topic: str, max_per_type: int = 2) -> defaultdict[str, list[dict]]:
     """Search a topic across all content types and return the top results grouped by type. Good for 'what does PyBites have on X?'"""
     pattern = re.compile(rf"\b{re.escape(topic.lower())}\b")
-    digest: dict[str, list[dict]] = {}
+    digest = defaultdict(list)
     for item in load_content():
         if pattern.search(item["title"].lower()) or pattern.search(
             item["summary"].lower()
         ):
             ct = item["content_type"]
-            bucket = digest.setdefault(ct, [])
-            if len(bucket) < max_per_type:
-                bucket.append({"title": item["title"], "link": item["link"]})
+            if len(digest[ct]) < max_per_type:
+                digest[ct].append({"title": item["title"], "link": item["link"]})
     return digest
 
 
